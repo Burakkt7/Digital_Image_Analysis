@@ -1,0 +1,40 @@
+﻿
+@model List<Digital_Image_Analysis.Models.Image>
+
+@{
+    ViewData["Title"] = "Resimler";
+}
+
+
+<h2>Resim Yükle</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data ">
+    <div class="form-group">
+
+        <input type="file" name="file" id="file" class="form-control-file btn btn-outline-primary" />
+        <button type="submit" class="btn btn-primary">Yükle</button>
+    </div>
+
+</form>
+<br />
+<br />
+<h3>Resmi şifrelemek için üzerine tıklamanız yeterli</h3>
+<br />
+<br />
+@if (Model != null && Model.Count > 0)
+{
+    <div class="row">
+        @foreach (var image in Model)
+        {
+            <div class="col-md-4">
+                <a href="@Url.Action("ViewImage","Images")/@image.Id" >
+                <img src="data:image/jpeg;base64,@Convert.ToBase64String(image.ImageData)"  class="img-fluid" />
+                </a>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Henüz yüklenmiş resim bulunmamaktadır.</p>
+}
