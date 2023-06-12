@@ -19,6 +19,48 @@ namespace Digital_Image_Analysis.Controllers
         {
             _context = context;
         }
+        //[HttpPost]
+        //public IActionResult ResizeImage(Guid id, string action)
+        //{
+        //    var image = _context.Images.FirstOrDefault(i => i.Id == id);
+        //    if (image == null)
+        //    {
+        //        return Json(new { success = false });
+        //    }
+
+        //    // Resmin boyutunu değiştirin
+
+        //    // Yeni resmi veritabanında güncelleyin
+        //    _context.SaveChanges();
+
+        //    return Json(new { success = true, imageUrl = "/Images/GetImage/" + image.Id });
+        //}
+        [HttpPost]
+        public IActionResult ResizeImage(Guid id, string action)
+        {
+            var image = _context.Images.FirstOrDefault(i => i.Id == id);
+            if (image == null)
+            {
+                return Json(new { success = false });
+            }
+
+            // Resmin boyutunu değiştirin
+
+            if (action == "increase")
+            {
+                // Boyutu artırma işlemleri
+            }
+            else if (action == "decrease")
+            {
+                // Boyutu azaltma işlemleri
+            }
+
+            // Yeni resmi veritabanında güncelleyin
+            _context.SaveChanges();
+
+            return Json(new { success = true, imageUrl = "/Images/GetImage/" + image.Id });
+        }
+
 
         public async Task<IActionResult> Index()
         {

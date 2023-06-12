@@ -1,4 +1,4 @@
-﻿
+﻿@*
 @model List<Digital_Image_Analysis.Models.Image>
 
 @{
@@ -38,3 +38,94 @@ else
 {
     <p>Henüz yüklenmiş resim bulunmamaktadır.</p>
 }
+*@
+@model List<Digital_Image_Analysis.Models.Image>
+
+@{
+    ViewData["Title"] = "Resimler";
+}
+
+
+<h2>Resim Yükle</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data ">
+    <div class="form-group">
+
+        <input type="file" name="file" id="file" class="form-control-file btn btn-outline-primary" />
+        <button type="submit" class="btn btn-primary">Yükle</button>
+    </div>
+
+</form>
+<br />
+<br />
+<h3>Resmi şifrelemek için üzerine tıklamanız yeterli</h3>
+<br />
+<br />
+@if (Model != null && Model.Count > 0)
+{
+    <div class="row">
+        @foreach (var image in Model)
+        {
+            <div class="col-md-4">
+                <a href="@Url.Action("ViewImage", "Images")/@image.Id">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(image.ImageData)" class="img-fluid" />
+                </a>
+                <div class="btn-group">
+                    <button class="btn btn-outline-primary" onclick="resizeImage('@image.Id', 'increase')">Büyüt</button>
+                    <button class="btn btn-outline-primary" onclick="resizeImage('@image.Id', 'decrease')">Küçült</button>
+                </div>
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <p>Henüz yüklenmiş resim bulunmamaktadır.</p>
+}
+<script>
+    function resizeImage(imageId, action) {
+        
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+
+        
+        var imgElement = document.querySelector('img[src="' + result.imageUrl + '"]');
+
+       
+        var newWidth, newHeight;
+        if (action === 'increase') {
+            newWidth = imgElement.width * 1.2;  
+            newHeight = imgElement.height * 1.2;
+        } else if (action === 'decrease') {
+            newWidth = imgElement.width * 0.8;  
+            newHeight = imgElement.height * 0.8;
+        }
+
+        
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        
+        ctx.drawImage(imgElement, 0, 0, newWidth, newHeight);
+
+        
+        var resizedImageData = canvas.toDataURL('image/jpeg');
+
+        
+        $.ajax({
+            url: '/Images/ResizeImage',
+            type: 'POST',
+            data: {
+                id: imageId,
+                resizedImageData: resizedImageData
+            },
+            success: function (result) {
+                if (result.success) {
+                    imgElement.src = result.imageUrl;
+                }
+            }
+        });
+    }
+
+</script>
